@@ -53,6 +53,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>ItemApp</finalName>
 	</build>
 
 </project>

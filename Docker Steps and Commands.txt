@@ -1,0 +1,196 @@
+For Local GUI we use Docker Desktop, to run docker command, we can use cmd terminal in local
+Docker Hub Registry is present in remote to store docker images
+
+Have a spring boot project ready with few endpoints
+
+Create Dockerfile and required below config : 
+
+FROM adoptopenjdk:11-jre-hotspot
+EXPOSE 8080
+ADD target/EmployeeApp.jar EmployeeApp.jar
+ENTRYPOINT ["java", "-jar", "EmployeeApp.jar"]
+
+Initial Required commands for Docker : 
+open terminal in project location
+docker login
+
+To create docker image with the help of docker engine(Docker desktop)
+This command creates docker image, it dowloads all the configuration mentioned in Dockerfile
+docker build -t department-app-img .
+
+To list all the docker images
+docker images
+
+From one image we can run it on multiple containers
+
+we should push our docker image to docker hub registry (Azure - ACR[Azure Container Registry])(AWS- ECR[Elastic container Registry])
+
+Re-tagging our local image before pushing it to docker hub : 
+
+docker tag image-name account/image-name
+Example :
+docker tag department-app-img rahulpandeyb24/department-app-img
+
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker images
+REPOSITORY                        TAG       IMAGE ID       CREATED         SIZE
+department-app-img                latest    fd496e8d3dbe   9 minutes ago   317MB
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker tag department-app-img rahulpandeyb24/department-app-img
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker images
+REPOSITORY                          TAG       IMAGE ID       CREATED          SIZE
+department-app-img                  latest    fd496e8d3dbe   10 minutes ago   317MB
+rahulpandeyb24/department-app-img   latest    fd496e8d3dbe   10 minutes ago   317MB
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> 
+
+
+To Tag a docker image to a specific version : 
+docker tag department-app-img:latest rahulpandeyb24/department-app-img:v3
+
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker images
+REPOSITORY                        TAG       IMAGE ID       CREATED         SIZE
+department-app-img                latest    fd496e8d3dbe   9 minutes ago   317MB
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker tag department-app-img rahulpandeyb24/department-app-img
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker images
+REPOSITORY                          TAG       IMAGE ID       CREATED          SIZE
+department-app-img                  latest    fd496e8d3dbe   10 minutes ago   317MB
+rahulpandeyb24/department-app-img   latest    fd496e8d3dbe   10 minutes ago   317MB
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> 
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker tag department-app-img:latest rahulpandeyb24/department-app-img:v3
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker images
+REPOSITORY                          TAG       IMAGE ID       CREATED          SIZE
+department-app-img                  latest    fd496e8d3dbe   14 minutes ago   317MB
+rahulpandeyb24/department-app-img   latest    fd496e8d3dbe   14 minutes ago   317MB
+rahulpandeyb24/department-app-img   v3        fd496e8d3dbe   14 minutes ago   317MB
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> 
+
+To create repository from local through cmd prompt in docker hub registry and push :
+It will by default push the latest tag
+
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker push rahulpandeyb24/department-app-img
+Using default tag: latest
+The push refers to repository [docker.io/rahulpandeyb24/department-app-img]
+f96d200f24c0: Pushed
+83b767b06655: Mounted from rahulpandeyb24/employee-app-img
+14fbd8039ba4: Mounted from rahulpandeyb24/employee-app-img
+da55b45d310b: Mounted from rahulpandeyb24/employee-app-img
+latest: digest: sha256:f96e078ddb5da9680cd16ba7aa3b1fa0a9bc9f7282855290761f6d5aa217c01e size: 1165
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> 
+
+Suppose if we want to push any specific tag :
+docker push rahulpandeyb24/department-app-img:v3
+
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker push rahulpandeyb24/department-app-img:v3
+The push refers to repository [docker.io/rahulpandeyb24/department-app-img]
+f96d200f24c0: Layer already exists
+83b767b06655: Layer already exists
+14fbd8039ba4: Layer already exists
+da55b45d310b: Layer already exists
+v3: digest: sha256:f96e078ddb5da9680cd16ba7aa3b1fa0a9bc9f7282855290761f6d5aa217c01e size: 1165
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> 
+
+In real world the image will be pushed by a CI pipeline (Continuous Integration) to docker hub (Azure - ACR or AWS-ECR) and the image will be pulled by a CD pipeline (Continuous Delivery) and deployed to cloud infrastructure
+
+To remove docker images from local :
+docker rmi department-app-img rahulpandeyb24/department-app-img
+
+the above command by default removes the latest tags if version is not mentioned
+
+To remove a specific version : 
+docker rmi rahulpandeyb24/department-app-img:v3
+
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker rmi rahulpandeyb24/department-app-img:v3
+Untagged: rahulpandeyb24/department-app-img:v3
+
+To run and pull an image from the docker hub :
+
+docker run -p 9091:8081 rahulpandeyb24/department-app-img:v3
+
+We are mapping 9091 to access it from our local
+
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker run -p 9091:8081 rahulpandeyb24/department-app-img:v3
+Unable to find image 'rahulpandeyb24/department-app-img:v3' locally
+v3: Pulling from rahulpandeyb24/department-app-img
+
+To see how many containers are running currently :
+docker ps
+
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker ps
+CONTAINER ID   IMAGE                                  COMMAND                  CREATED         STATUS          PORTS                    NAMES
+32e3311ec708   rahulpandeyb24/department-app-img:v3   "java -jar Departmen…"   9 minutes ago   Up 16 seconds   0.0.0.0:9091->8081/tcp   epic_yonath
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> 
+
+Inorder to run another container of the same image : we can run same image on multiple containers
+use different port : 9092
+docker run -p 9092:8081 rahulpandeyb24/department-app-img:v3
+
+Suppose we want to kill one container : 
+
+docker kill container_ID
+
+example : docker kill 32e3311ec708
+
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker ps
+CONTAINER ID   IMAGE                                  COMMAND                  CREATED          STATUS          PORTS                    NAMES
+578a852ca70b   rahulpandeyb24/department-app-img:v3   "java -jar Departmen…"   3 minutes ago    Up 13 seconds   0.0.0.0:9092->8081/tcp   strange_blackwell
+32e3311ec708   rahulpandeyb24/department-app-img:v3   "java -jar Departmen…"   16 minutes ago   Up 7 minutes    0.0.0.0:9091->8081/tcp   epic_yonath
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker kill 32e3311ec708
+32e3311ec708
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service> docker ps
+CONTAINER ID   IMAGE                                  COMMAND                  CREATED         STATUS              PORTS                    NAMES
+578a852ca70b   rahulpandeyb24/department-app-img:v3   "java -jar Departmen…"   4 minutes ago   Up About a minute   0.0.0.0:9092->8081/tcp   strange_blackwell      
+PS D:\Intellij Workspace\Java Workspace\Microservice Daily Code buffer\department-service>
+
+Inorder to run it in background : 
+-d : dettach (runs the container in background)
+-p : publish the port
+docker run -d -p 9091:8081 rahulpandeyb24/department-app-img:v3
+
+To pull an already present image from docker hub : Mongo DB
+docker pull mongo:latest
+
+In order to provide a name to a container while running an image in background:
+docker run -d -p 28000:27017 --name mongodb-container-one mongo:latest
+
+In order to link an already running container with a new container :
+
+docker run -p 8070:8091 --name springboot-with-mongodb-container-one --link mongodb-container-one -d rahul
+pandeyb24/springboot-with-mongodb:v1
+
+PS D:\Intellij Workspace\Java Workspace\ob-item-service> docker run -p 8070:8091 --name springboot-with-mongodb-container-one --link mongodb-container-one -d rahul
+pandeyb24/springboot-with-mongodb:v1
+2fde45e785cabfc8e12c4607bdd279e9b5eff7aacc03ad88b6f82043bd3ffa84
+
+To check springboot logs inside docker container (Debugging):
+docker logs <NAME_OF_RUNNING_CONTAINER>
+example : 
+docker logs springboot-with-mongodb-container-one
+
+To enter inside a running container : 
+-it : Integrated Terminal
+docker exec -it <NAME_OF_RUNNING_CONTAINER> bash
+
+PS D:\Intellij Workspace\Java Workspace\ob-item-service> docker exec -it springboot-with-mongodb-container-one bash
+root@d1cadf7c0ee5:/# (Linux Machine)
+
+root@d1cadf7c0ee5:/# exit
+
+type "exit" to come out of a running container
+
+To enter inside a running mongo db container and use mongo commands : 
+
+PS D:\Intellij Workspace\Java Workspace\ob-item-service> docker exec -it mongodb-container-one mongosh
+
+test> show dbs
+admin   40.00 KiB
+config  12.00 KiB
+local   40.00 KiB
+test> 
+
+Docker-Compose is a tool which is used to define and run multi-container docker applications.
+First we need to create a yaml file under src/main/resources, with name like "docker-compose.yml"
+once we configure all services in the yml file, go to resource location using CD and run it using command : docker-compose up
+
+PS D:\Intellij Workspace\Java Workspace\ob-item-service\src\main\resources> docker-compose up
+[+] Running 3/3
+ - Network resources_default                        Created                                                                                                   2.5s
+ - Container mongodb-container-one                  Created                                                                                                   2.4s
+ - Container springboot-with-mongodb-container-one  Created     
