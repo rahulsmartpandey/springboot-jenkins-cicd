@@ -1,0 +1,14 @@
+version: "3"
+services:
+  mongodb-container-one:
+    image: mongo:latest
+    container_name: "mongodb-container-one"
+    ports:
+      - 28000:27017
+  springboot-with-mongodb-container-one:
+    image: rahulpandeyb24/springboot-with-mongodb:v3
+    container_name: springboot-with-mongodb-container-one
+    ports:
+      - 8070:8091
+    links:
+      - mongodb-container-one
