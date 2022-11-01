@@ -6,5 +6,10 @@
                  git branch: 'develop', url: 'https://github.com/rahulsmartpandey/springboot-jenkins-cicd.git'
             }
         }
+         stage('UNIT Testing'){
+              steps{
+                  sh 'mvn test'
+              }
+         }
     }
 }
