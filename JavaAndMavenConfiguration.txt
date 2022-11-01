@@ -1,0 +1,5 @@
+Please watch below video on how to install and set maven and Java path in Environment Variables :
+
+https://www.youtube.com/watch?v=km3tLti4TCM
+
+For Java Download open source version (In Google search adoptopenJDK 11)
