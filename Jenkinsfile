@@ -22,11 +22,13 @@
                 }
          }
          stage('static code analysis'){
-                steps{
-                    withSonarQubeEnv(credentialsId: 'sonar-api') {
+             steps{
+                  script{
+                        withSonarQubeEnv(credentialsId: 'sonar-api') {
                         bat 'mvn clean package sonar:sonar'
-                    }
-                }
+                        }
+                  }
+             }
          }
      }
 }
