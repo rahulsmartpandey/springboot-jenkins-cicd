@@ -2,3 +2,4 @@ Default Port : 9000
 
 Watch below video to install SonarQube in Windows (Local)
 https://www.youtube.com/watch?v=846xAH40oUM
+
