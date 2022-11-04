@@ -16,5 +16,10 @@
                   bat 'mvn verify -DskipUnitTests'
               }
          }
+         stage('Maven Build'){
+                steps{
+                  bat 'mvn clean install'
+                }
+         }
      }
 }
