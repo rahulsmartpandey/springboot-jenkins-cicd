@@ -3,3 +3,6 @@ Default Port : 9000
 Watch below video to install SonarQube in Windows (Local)
 https://www.youtube.com/watch?v=846xAH40oUM
 
+Nexus Repository :
+https://www.howtoforge.com/how-to-install-and-configure-nexus-repository-manager-on-ubuntu-20-04/
+
